@@ -8,7 +8,14 @@ fun main() {
 }
 
 class Day02P1 {
-    fun solve(inputLines: List<String>): Pair<Int, Int> {
+    data class Position(
+        val depth: Int,
+        val horizontal: Int
+    ) {
+        override fun toString(): String = "($depth, $horizontal)"
+    }
+
+    fun solve(inputLines: List<String>): Position {
         var depth: Int
         var horizontal: Int
 
@@ -19,7 +26,7 @@ class Day02P1 {
         depth = down - up
         horizontal = forward
 
-        return Pair(depth, horizontal)
+        return Position(depth, horizontal)
     }
 
     private fun extractCommandSum(inputLines: List<String>, command: String): Int {

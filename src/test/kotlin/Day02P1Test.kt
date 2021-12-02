@@ -16,7 +16,7 @@ internal class Day02P1Test {
             forward 2
             """.trimIndent().split("\n")
 
-        assertThat(Day02P1().solve(input).first).isEqualTo(10)
+        assertThat(Day02P1().solve(input).depth).isEqualTo(10)
     }
 
     @Test
@@ -30,6 +30,6 @@ internal class Day02P1Test {
             forward 2
             """.trimIndent().split("\n")
 
-        assertThat(Day02P1().solve(input).second).isEqualTo(15)
+        assertThat(Day02P1().solve(input).horizontal).isEqualTo(15)
     }
 }
