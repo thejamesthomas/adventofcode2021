@@ -22,12 +22,12 @@ class Day03P1 {
         }
 
         var gammaBinary = IntArray(digitsCounter.size)
-        digitsCounter.forEachIndexed { i, digit ->
+        digitsCounter.forEachIndexed { i, _ ->
             gammaBinary[i] = digitsCounter[i] / (inputLines.size / 2)
         }
 
         var epsilonBinary = IntArray(digitsCounter.size)
-        epsilonBinary.forEachIndexed { i, digit ->
+        epsilonBinary.forEachIndexed { i, _ ->
             epsilonBinary[i] = if(gammaBinary[i] == 0) 1 else 0
         }
 
