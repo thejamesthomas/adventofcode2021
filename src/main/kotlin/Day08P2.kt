@@ -1,3 +1,5 @@
+import java.util.*
+import kotlin.collections.HashMap
 import kotlin.io.path.Path
 import kotlin.io.path.readText
 
@@ -11,92 +13,89 @@ class Day08P2 {
     fun solve(inputLines: List<String>): Int {
         val outputStrings = inputLines.map { input ->
             val inputAndOutput = input.split("|")
-                .map { s -> s.trim() }
+                .map { fullInput -> fullInput.trim() }
+                .map { trimmedInput -> trimmedInput.split(" ")
+                    .map { inputSignal -> inputSignal.toSortedSet() }
+                }
 
-            val input = inputAndOutput.first()
+            val input = inputAndOutput.first().toMutableList()
             val output = inputAndOutput.last()
 
-            val inputToDigitMap = mapInputToDigit(input.split(" ").toMutableList())
+            val inputToDigitMap = mapInputToDigit(input)
 
-            output.split(" ").joinToString(separator = "") { inputToDigitMap[it.toCharArray().sorted().toString()].toString() }
+            output.joinToString(separator = "") { inputToDigitMap[it].toString() }
         }
 
         return outputStrings.sumOf { outputString -> Integer.parseInt(outputString) }
     }
 
-    private fun mapInputToDigit(inputSignals: MutableList<String>): Map<String, Int> {
-        var inputToDigitMap = HashMap<String, Int>()
+    private fun mapInputToDigit(inputSignals: MutableList<SortedSet<Char>>): Map<SortedSet<Char>, Int> {
+        var inputToDigitMap = HashMap<SortedSet<Char>, Int>()
 
         //Find the four digits we're sure of
-        val oneInputSignal = inputSignals.find { i -> i.length == 2 }!!
-        inputToDigitMap[oneInputSignal.toCharArray().sorted().toString()] = 1
+        val oneInputSignal = inputSignals.find { i -> i.size == 2 }!!
+        inputToDigitMap[oneInputSignal] = 1
         inputSignals.remove(oneInputSignal)
 
-        val fourInputSignal = inputSignals.find { i -> i.length == 4 }!!
-        inputToDigitMap[fourInputSignal.toCharArray().sorted().toString()] = 4
+        val fourInputSignal = inputSignals.find { i -> i.size == 4 }!!
+        inputToDigitMap[fourInputSignal] = 4
         inputSignals.remove(fourInputSignal)
 
-        val sevenInputSignal = inputSignals.find { i -> i.length == 3 }!!
-        inputToDigitMap[sevenInputSignal.toCharArray().sorted().toString()] = 7
+        val sevenInputSignal = inputSignals.find { i -> i.size == 3 }!!
+        inputToDigitMap[sevenInputSignal] = 7
         inputSignals.remove(sevenInputSignal)
 
-        val eightInputSignal = inputSignals.find { i -> i.length == 7 }!!
-        inputToDigitMap[eightInputSignal.toCharArray().sorted().toString()] = 8
+        val eightInputSignal = inputSignals.find { i -> i.size == 7 }!!
+        inputToDigitMap[eightInputSignal] = 8
         inputSignals.remove(eightInputSignal)
 
         //Next find 0, which will have length six and be missing one character from 8 and not include all the segments of 4
         val zeroInputSignal = inputSignals.find { inputSignal ->
-            inputSignal.length == 6 &&
-                    computeIntersection(eightInputSignal, inputSignal).size == 6 &&
-                    computeIntersection(fourInputSignal, inputSignal).size == 3 &&
-                    computeIntersection(oneInputSignal, inputSignal).size == 2
+            inputSignal.size == 6 &&
+                    eightInputSignal.intersect(inputSignal).size == 6 &&
+                    fourInputSignal.intersect(inputSignal).size == 3 &&
+                    oneInputSignal.intersect(inputSignal).size == 2
         }!!
-        inputToDigitMap[zeroInputSignal.toCharArray().sorted().toString()] = 0
+        inputToDigitMap[zeroInputSignal] = 0
         inputSignals.remove(zeroInputSignal)
 
         //Next find 6, which is length six and compares to eight and one
         val sixInputSignal = inputSignals.find { inputSignal ->
-            inputSignal.length == 6 &&
-                    computeIntersection(eightInputSignal, inputSignal).size == 6 &&
-                    computeIntersection(oneInputSignal, inputSignal).size == 1
+            inputSignal.size == 6 &&
+                    eightInputSignal.intersect(inputSignal).size == 6 &&
+                    oneInputSignal.intersect(inputSignal).size == 1
         }!!
-        inputToDigitMap[sixInputSignal.toCharArray().sorted().toString()] = 6
+        inputToDigitMap[sixInputSignal] = 6
         inputSignals.remove(sixInputSignal)
 
         //Next find 9, which is the last remaining digit with length 6
         val nineInputSignal = inputSignals.find { inputSignal ->
-            inputSignal.length == 6
+            inputSignal.size == 6
         }!!
-        inputToDigitMap[nineInputSignal.toCharArray().sorted().toString()] = 9
+        inputToDigitMap[nineInputSignal] = 9
         inputSignals.remove(nineInputSignal)
 
         //Next find 5, which is length 5 and includes every part of 6
         val fiveInputSignal = inputSignals.find { inputSignal ->
-            inputSignal.length == 5 &&
-                    computeIntersection(sixInputSignal, inputSignal).size == 5
+            inputSignal.size == 5 &&
+                    sixInputSignal.intersect(inputSignal).size == 5
         }!!
-        inputToDigitMap[fiveInputSignal.toCharArray().sorted().toString()] = 5
+        inputToDigitMap[fiveInputSignal] = 5
         inputSignals.remove(fiveInputSignal)
 
         //Next find 3 which has length 5 and includes every part of 7
         val threeInputSignal = inputSignals.find { inputSignal ->
-            inputSignal.length == 5 &&
-                    computeIntersection(sevenInputSignal, inputSignal).size == 3
+            inputSignal.size == 5 &&
+                    sevenInputSignal.intersect(inputSignal).size == 3
         }!!
-        inputToDigitMap[threeInputSignal.toCharArray().sorted().toString()] = 3
+        inputToDigitMap[threeInputSignal] = 3
         inputSignals.remove(threeInputSignal)
 
         //Lastly we have 2
         val twoInputSignal = inputSignals.first()
-        inputToDigitMap[twoInputSignal.toCharArray().sorted().toString()] = 2
+        inputToDigitMap[twoInputSignal] = 2
         inputSignals.remove(twoInputSignal)
 
         return inputToDigitMap
     }
-
-    private fun computeIntersection(
-        targetDigitSignal: String,
-        inputSignal: String
-    ) = targetDigitSignal.toSet().intersect(inputSignal.toSet())
-
 }
