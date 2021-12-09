@@ -7,13 +7,15 @@ internal class Day06P2Test {
     fun solve_shouldCountNumberOfLanternFishCorrectlyAfter18DaysWithTheSampleInput() {
         val input = "3,4,3,1,2"
 
-        assertThat(Day06P2(18).solve(input)).isEqualTo(26)
+        val expectedValue: ULong = 26u
+        assertThat(Day06P2(18).solve(input)).isEqualTo(expectedValue)
     }
 
     @Test
     fun solve_shouldCountNumberOfLanternFishCorrectlyAfter80DaysWithTheSampleInput() {
         val input = "3,4,3,1,2"
 
-        assertThat(Day06P2(80).solve(input)).isEqualTo(5934)
+        val expectedValue: ULong = 5934u
+        assertThat(Day06P2(80).solve(input)).isEqualTo(expectedValue)
     }
 }

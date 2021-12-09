@@ -77,7 +77,7 @@ class Day04P1 {
             var columnModulo = 5
             var columnIndex = 0
             while (columnIndex < 5) {
-                if (boardState.filterIndexed { index, b -> index % columnModulo == columnIndex }
+                if (boardState.filterIndexed { index, _ -> index % columnModulo == columnIndex }
                         .all { b -> b }) return true
                 columnIndex += 1
             }
@@ -87,9 +87,9 @@ class Day04P1 {
             // indexes 4, 8, 12, 16, 20
             val upperLeftLowerRightIndices = listOf(0, 6, 12, 18, 24)
             val lowerLeftUpperRightIndices = listOf(4, 8, 12, 16, 20)
-            if (boardState.filterIndexed { index, b -> upperLeftLowerRightIndices.contains(index) }
+            if (boardState.filterIndexed { index, _ -> upperLeftLowerRightIndices.contains(index) }
                     .all { b -> b }) return true
-            if (boardState.filterIndexed { index, b -> lowerLeftUpperRightIndices.contains(index) }
+            if (boardState.filterIndexed { index, _ -> lowerLeftUpperRightIndices.contains(index) }
                     .all { b -> b }) return true
             return false
         }

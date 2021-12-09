@@ -11,8 +11,8 @@ fun main() {
 
 class Day08P2 {
     fun solve(inputLines: List<String>): Int {
-        val outputStrings = inputLines.map { input ->
-            val inputAndOutput = input.split("|")
+        val outputStrings = inputLines.map { inputLine ->
+            val inputAndOutput = inputLine.split("|")
                 .map { fullInput -> fullInput.trim() }
                 .map { trimmedInput -> trimmedInput.split(" ")
                     .map { inputSignal -> inputSignal.toSortedSet() }

@@ -84,7 +84,7 @@ class Day04P2 {
             var columnModulo = 5
             var columnIndex = 0
             while (columnIndex < 5) {
-                if (boardState.filterIndexed { index, b -> index % columnModulo == columnIndex }
+                if (boardState.filterIndexed { index, _ -> index % columnModulo == columnIndex }
                         .all { b -> b }) return true
                 columnIndex += 1
             }

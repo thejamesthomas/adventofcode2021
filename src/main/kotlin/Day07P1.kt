@@ -24,7 +24,7 @@ class Day07P1 {
     }
 
     fun getFuelCost(crabPositions: Array<Int>, alignmentIndex: Int): Int {
-        return crabPositions.reduceIndexed { index, acc, crabPosition ->
+        return crabPositions.reduce { acc, crabPosition ->
             acc + abs((crabPosition - alignmentIndex))
         }
     }
