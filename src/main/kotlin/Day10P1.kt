@@ -28,7 +28,7 @@ private fun Char.pointValue(): Int {
     }
 }
 
-fun String.isCorrupted(): Pair<Boolean, Char> {
+private fun String.isCorrupted(): Pair<Boolean, Char> {
     val stack = Stack<Char>()
 
     this.toCharArray().forEach { currentChar ->
@@ -46,7 +46,7 @@ fun String.isCorrupted(): Pair<Boolean, Char> {
     return false to 'X'
 }
 
-private fun Char.isMatchingOpeningCharacterFor(closingCharacter: Char): Boolean {
+fun Char.isMatchingOpeningCharacterFor(closingCharacter: Char): Boolean {
     return when (closingCharacter) {
         ')' -> this == '('
         ']' -> this == '['
@@ -56,10 +56,10 @@ private fun Char.isMatchingOpeningCharacterFor(closingCharacter: Char): Boolean 
     }
 }
 
-private fun Char.isClosingCharacter(): Boolean {
+fun Char.isClosingCharacter(): Boolean {
     return this in listOf(')', ']', '}', '>')
 }
 
-private fun Char.isOpeningCharacter(): Boolean {
+fun Char.isOpeningCharacter(): Boolean {
     return this in listOf('(', '[', '{', '<')
 }
