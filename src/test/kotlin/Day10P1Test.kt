@@ -9,7 +9,7 @@ internal class Day10P1Test {
     fun isCorrupted_corruptedLineShouldBeMarkedAsCorrupted1() {
         val corruptedLine = "{([(<{}[<>[]}>{[]{[(<()>"
 
-        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorrupted()
+        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorruptedPair()
         assertThat(actualStatus).isEqualTo(true)
         assertThat(actualIncorrectCharacter).isEqualTo('}')
     }
@@ -18,7 +18,7 @@ internal class Day10P1Test {
     fun isCorrupted_corruptedLineShouldBeMarkedAsCorrupted2() {
         val corruptedLine = "[[<[([]))<([[{}[[()]]]"
 
-        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorrupted()
+        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorruptedPair()
         assertThat(actualStatus).isEqualTo(true)
         assertThat(actualIncorrectCharacter).isEqualTo(')')
     }
@@ -27,7 +27,7 @@ internal class Day10P1Test {
     fun isCorrupted_corruptedLineShouldBeMarkedAsCorrupted3() {
         val corruptedLine = "[{[{({}]{}}([{[{{{}}([]"
 
-        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorrupted()
+        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorruptedPair()
         assertThat(actualStatus).isEqualTo(true)
         assertThat(actualIncorrectCharacter).isEqualTo(']')
     }
@@ -35,7 +35,7 @@ internal class Day10P1Test {
     fun isCorrupted_corruptedLineShouldBeMarkedAsCorrupted4() {
         val corruptedLine = "[<(<(<(<{}))><([]([]()"
 
-        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorrupted()
+        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorruptedPair()
         assertThat(actualStatus).isEqualTo(true)
         assertThat(actualIncorrectCharacter).isEqualTo(')')
     }
@@ -43,7 +43,7 @@ internal class Day10P1Test {
     fun isCorrupted_corruptedLineShouldBeMarkedAsCorrupted5() {
         val corruptedLine = "<{([([[(<>()){}]>(<<{{"
 
-        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorrupted()
+        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorruptedPair()
         assertThat(actualStatus).isEqualTo(true)
         assertThat(actualIncorrectCharacter).isEqualTo('>')
     }
@@ -52,7 +52,7 @@ internal class Day10P1Test {
     fun isCorrupted_uncorruptedLineShouldNotBeMarkedAsCorrupted1() {
         val corruptedLine = "[({(<(())[]>[[{[]{<()<>>"
 
-        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorrupted()
+        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorruptedPair()
         assertThat(actualStatus).isEqualTo(false)
         assertThat(actualIncorrectCharacter).isEqualTo('X')
     }
@@ -61,7 +61,7 @@ internal class Day10P1Test {
     fun isCorrupted_uncorruptedLineShouldNotBeMarkedAsCorrupted2() {
         val corruptedLine = "[(()[<>])]({[<{<<[]>>("
 
-        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorrupted()
+        val (actualStatus, actualIncorrectCharacter) = corruptedLine.isCorruptedPair()
         assertThat(actualStatus).isEqualTo(false)
         assertThat(actualIncorrectCharacter).isEqualTo('X')
     }

@@ -11,7 +11,7 @@ fun main() {
 class Day10P1 {
     fun solve(inputLines: List<String>): Int {
         return inputLines.sumOf { line ->
-            val (_, corruptedChar) = line.isCorrupted()
+            val (_, corruptedChar) = line.isCorruptedPair()
 
             corruptedChar.pointValue()
         }
@@ -28,7 +28,7 @@ private fun Char.pointValue(): Int {
     }
 }
 
-private fun String.isCorrupted(): Pair<Boolean, Char> {
+fun String.isCorruptedPair(): Pair<Boolean, Char> {
     val stack = Stack<Char>()
 
     this.toCharArray().forEach { currentChar ->

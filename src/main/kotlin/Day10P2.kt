@@ -11,7 +11,7 @@ fun main() {
 class Day10P2 {
     fun solve(inputLines: List<String>): ULong {
         val pointValues = inputLines
-            .filter { line -> !line.isCorrupted() }
+            .filter { line -> !line.isCorruptedBoolean() }
             .map { line ->
                 val solvedString = line.findSolution()
                 println(solvedString)
@@ -70,7 +70,7 @@ private fun Char.getMatchingClosingCharacter(): Char {
     }
 }
 
-private fun String.isCorrupted(): Boolean {
+private fun String.isCorruptedBoolean(): Boolean {
     val stack = Stack<Char>()
 
     this.toCharArray().forEach { currentChar ->
