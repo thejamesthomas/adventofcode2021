@@ -45,7 +45,7 @@ class Day12P2 {
         }
 
         val startCave = caves.find { cave -> cave.name == "start" }!!
-        val cavePaths = mutableListOf(mutableListOf(startCave))
+        val cavePaths = mutableListOf(CavePath(mutableListOf(startCave)))
         while (!cavePaths.isChartingComplete()) {
             cavePaths.chartNextStep()
         }
@@ -55,7 +55,7 @@ class Day12P2 {
         }
 
         allValidPaths.forEach { validPath ->
-            println(validPath.getPathString())
+            println(validPath.toString())
         }
         return allValidPaths.size
     }
@@ -63,48 +63,49 @@ class Day12P2 {
     private fun findExistingCave(caves: ArrayList<Cave>, caveName: String) =
         caves.find { cave -> cave.name == caveName }
 
-    private fun <E> MutableList<E>.chartNextStep() {
-        var cavePaths = this as MutableList<MutableList<Cave>>
-        var cavePathsToAdd = mutableListOf(mutableListOf<Cave>())
-        var cavePathsToRemove = mutableListOf(mutableListOf<Cave>())
-        cavePaths
-            .filter { cavePath -> !cavePath.isInvalid() }
+    private fun MutableList<CavePath>.chartNextStep() {
+        var newCavePaths = mutableListOf(CavePath())
+        this
             .forEach { cavePath ->
-                cavePathsToAdd.addAll(cavePath.last().connections
-                    .filter { connection -> connection.name != "start" }
-                    .map { connection ->
-                        cavePathsToRemove.add(cavePath)
-                        val newCavePath = cavePath.toMutableList()
-                        newCavePath.add(connection)
-                        newCavePath
-                    })
+                if(cavePath.isInvalid()) {
+                    newCavePaths.add(cavePath)
+                } else {
+                    val tempCavePaths = cavePath.path.last().connections
+                        .filter { connection -> connection.name != "start" }
+                        .map { connection ->
+                            val newCavePath = CavePath(cavePath.path.toMutableList())
+                            newCavePath.add(connection)
+                            newCavePath
+                        }
+                    if (tempCavePaths.isEmpty())
+                        newCavePaths.add(cavePath)
+                    else {
+                        newCavePaths.addAll(tempCavePaths)
+                    }
+                }
             }
-        cavePathsToRemove.removeIf { cavePath -> cavePath.isEmpty() }
-        cavePathsToAdd.removeIf { cavePath -> cavePath.isEmpty() }
+        newCavePaths.removeIf { cavePath -> cavePath.path.isEmpty() }
 
-        this.removeAll(cavePathsToRemove)
-        this.addAll(cavePathsToAdd)
+        this.clear()
+        this.addAll(newCavePaths)
     }
 
-    private fun <E> MutableList<E>.isChartingComplete(): Boolean {
-        val cavePaths = this as MutableList<MutableList<Cave>>
-        return cavePaths.all { cavePath -> cavePath.isNotEmpty() && cavePath.isInvalid() || cavePath.last().name == "end" }
+    private fun MutableList<CavePath>.isChartingComplete(): Boolean {
+        return this.all { cavePath -> cavePath.path.isNotEmpty() && cavePath.isInvalid() || cavePath.path.last().name == "end" }
     }
 
     private fun MutableList<Cave>.getPathString() =
         this.joinToString(",") { cave -> cave.name }
 
-    private fun <E> MutableList<E>.isInvalid(): Boolean {
-        val smallCaveNames = this.filter { unconverted ->
-            val cave = unconverted as Cave
+    private fun CavePath.isInvalid(): Boolean {
+        val smallCaveNames = this.path.filter { cave ->
             cave.isSmall
-        }.map { unconverted ->
-            val cave = unconverted as Cave
+        }.map { cave ->
             cave.name
         }.distinct()
 
         val smallCaveVisitCounts = smallCaveNames.map { caveName ->
-            val numberOfVisitsToThisSmallCave = this.count { unconverted ->
+            val numberOfVisitsToThisSmallCave = this.path.count { unconverted ->
                 val cave = unconverted as Cave
                 cave.name == caveName
             }
@@ -129,8 +130,12 @@ class Day12P2 {
     }
 
     private data class CavePath(
-        private val path: ArrayList<Cave>
+        val path: MutableList<Cave> = mutableListOf()
     ) {
+        fun add(cave: Cave) {
+            path.add(cave)
+        }
+
         override fun toString(): String {
             return path.joinToString(",") { cave -> cave.name }
         }
