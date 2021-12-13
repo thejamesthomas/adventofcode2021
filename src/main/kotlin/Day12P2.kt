@@ -4,11 +4,11 @@ import kotlin.io.path.readText
 
 fun main() {
     val input = Path("src/main/resources/Day12Input.txt").readText().split("\n")
-    val solutionValue = Day12P1().solve(input)
+    val solutionValue = Day12P2().solve(input)
     println(solutionValue)
 }
 
-class Day12P1 {
+class Day12P2 {
     fun solve(inputLines: List<String>): Int {
         var caves = ArrayList<Cave>()
         inputLines.forEach { inputLine ->
@@ -24,7 +24,7 @@ class Day12P1 {
             var cave = findExistingCave(caves, caveName)
             if (cave == null) {
                 cave = Cave(
-                    caveName, caveName[0].isLowerCase()
+                    caveName, (caveName[0].isLowerCase() && caveName != "start")
                 )
             }
 
@@ -95,23 +95,25 @@ class Day12P1 {
         this.joinToString(",") { cave -> cave.name }
 
     private fun <E> MutableList<E>.isInvalid(): Boolean {
-        var invalid = false
         val smallCaveNames = this.filter { unconverted ->
             val cave = unconverted as Cave
             cave.isSmall
         }.map { unconverted ->
             val cave = unconverted as Cave
             cave.name
-        }
+        }.distinct()
 
-        smallCaveNames.forEach { caveName ->
-            invalid = this.count { unconverted ->
+        val smallCaveVisitCounts = smallCaveNames.map { caveName ->
+            val numberOfVisitsToThisSmallCave = this.count { unconverted ->
                 val cave = unconverted as Cave
                 cave.name == caveName
-            } > 1
+            }
+            numberOfVisitsToThisSmallCave
         }
+        val visitedASmallCaveTwiceAtLeastTwice = smallCaveVisitCounts.count { visitCount -> visitCount == 2 } >= 2
+        val visitedAnySmallCaveMoreThanTwice = smallCaveVisitCounts.count { visitCount -> visitCount > 2 } > 0
 
-        return invalid
+        return visitedASmallCaveTwiceAtLeastTwice || visitedAnySmallCaveMoreThanTwice
     }
 
     private data class Cave(
@@ -123,6 +125,18 @@ class Day12P1 {
     ) {
         override fun toString(): String {
             return this.name
+        }
+    }
+
+    private data class CavePath(
+        private val path: ArrayList<Cave>
+    ) {
+        override fun toString(): String {
+            return path.joinToString(",") { cave -> cave.name }
+        }
+
+        override fun equals(other: Any?): Boolean {
+            return this.toString() == other.toString()
         }
     }
 }
