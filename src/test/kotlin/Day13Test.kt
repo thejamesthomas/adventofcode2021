@@ -1,9 +1,7 @@
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.Assertions.*
-
-internal class Day13P1Test {
+internal class Day13Test {
 
     @Test
     fun solve_shouldReturn17ForTheGivenSampleInput() {

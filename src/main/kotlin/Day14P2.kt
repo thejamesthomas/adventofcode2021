@@ -1,4 +1,3 @@
-import java.io.File
 import kotlin.io.path.Path
 import kotlin.io.path.readText
 
@@ -9,59 +8,51 @@ fun main() {
 }
 
 class Day14P2(val numberOfStepsToSimulate: Int) {
-    fun solve(inputLines: List<String>): Int {
-        var inputFile = File("Day14P2.txt")
+    fun solve(inputLines: List<String>): Long {
         var insertionRules = HashMap<String, Char>()
-        inputFile.writeText(inputLines.first())
+        var elementCounts = HashMap<Char, Long>()
+
+        var generator = HashMap<String, Long>()
+        var generatorIncrement = HashMap<String, Long>()
 
         inputLines.slice(2 until inputLines.size).map { line ->
             val (pair, insertion) = line.split(" -> ")
-            insertionRules.put(pair, insertion[0])
+            insertionRules[pair] = insertion[0]
+            generator[pair] = 0
+            generatorIncrement[pair] = 0
+            elementCounts.put(insertion[0], 0)
+        }
+        val firstLine = inputLines.first()
+        firstLine.forEach { c -> elementCounts[c] = elementCounts[c]!! + 1 }
+
+        firstLine.windowed(2).forEach { pair ->
+            generator[pair] = generator[pair]!! + 1
         }
 
         for (step in 1..numberOfStepsToSimulate) {
-            val stepOutputFile = File(String.format("Day14P2step%2d.txt", step))
-            val outputWriter = stepOutputFile.writer()
-            val reader = inputFile.bufferedReader()
+            generator
+                .filter { entry -> entry.value > 0 }
+                .forEach { entry ->
+                    val polymerPair = entry.key
+                    val timesPairAppears = entry.value
+                    val newPolymerToInsert = insertionRules[polymerPair]!!
+                    val firstNewPolymer = polymerPair[0] + newPolymerToInsert.toString()
+                    val secondNewPolymer = newPolymerToInsert.toString() + polymerPair[1]
 
-
-            var isFirst = true
-            while (true) {
-                val firstCharacter = reader.read().toChar()
-                reader.mark(1)
-                val secondCharacter = reader.read().toChar()
-                if (firstCharacter == '\uFFFF' || secondCharacter == '\uFFFF') {
-                    break
+                    generatorIncrement[firstNewPolymer] = generatorIncrement[firstNewPolymer]!! + timesPairAppears
+                    generatorIncrement[secondNewPolymer] = generatorIncrement[secondNewPolymer]!! + timesPairAppears
+                    generatorIncrement[polymerPair] = generatorIncrement[polymerPair]!! - timesPairAppears
+                    elementCounts[newPolymerToInsert] = elementCounts[newPolymerToInsert]!! + timesPairAppears
                 }
-                reader.reset()
-                val pair = firstCharacter.toString() + secondCharacter.toString()
-                val toInsert = insertionRules[pair]
 
-                if(isFirst) {
-                    isFirst = false
-                    outputWriter.write(String.format("%s%s%s", firstCharacter, toInsert!!, secondCharacter))
-                } else {
-                    outputWriter.write(String.format("%s%s", toInsert!!, secondCharacter))
-                }
+            generatorIncrement.forEach { entry ->
+                generator[entry.key] = generator[entry.key]!! + entry.value
             }
-            outputWriter.flush()
-            inputFile = stepOutputFile
-        }
 
-
-        var elementCounts = HashMap<Char, Int>()
-        val reader = inputFile.bufferedReader()
-        while (true) {
-            val element = reader.read().toChar()
-            if (element == '\uFFFF')
-                break
-            if (elementCounts[element] != null) {
-                elementCounts[element] = elementCounts[element]!! + 1
-            } else {
-                elementCounts[element] = 1
+            generatorIncrement.keys.forEach { key ->
+                generatorIncrement[key] = 0
             }
         }
-
         val sortedElementCounts = elementCounts.toList().sortedByDescending { (_, value) -> value }
 
         return sortedElementCounts.first().second - sortedElementCounts.last().second
