@@ -1,10 +1,10 @@
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class Day14P1Test {
+internal class Day14P2Test {
 
     @Test
-    fun solveShouldReturn1588WithTheGivenSampleInput() {
+    fun solveShouldReturn2188189693529WithTheGivenSampleInput() {
         val sampleInput = """
             NNCB
 
@@ -26,6 +26,6 @@ internal class Day14P1Test {
             CN -> C
         """.trimIndent().split("\n")
 
-        assertThat(Day14P1(10).solve(sampleInput)).isEqualTo(1588)
+        assertThat(Day14P2(40).solve(sampleInput)).isEqualTo(2188189693529)
     }
 }
